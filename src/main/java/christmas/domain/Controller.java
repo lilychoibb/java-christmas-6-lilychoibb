@@ -19,13 +19,12 @@ public class Controller {
     public void eventPlannerLogic() {
         outputView.startMessage();
         inputExpectedVisitData();
+        inputOrderMenu();
 
-        String orderMenu = inputView.promptForMenuOrder();
-        splitMenuAndQuantity(extractMenuItems(orderMenu));
     }
 
     private void inputExpectedVisitData() {
-        int expectedVisitDate = inputView.promptForExpectedVisitDate();
+        int expectedVisitDate = Integer.parseInt(removeBlank(inputView.promptForExpectedVisitDate()));
 
         try {
             new ExpectedVisitDate(expectedVisitDate);
@@ -33,6 +32,21 @@ public class Controller {
             System.out.println(ErrorMessage.INVALID_DATE.getMessage());
             inputExpectedVisitData();
         }
+    }
+
+    private void inputOrderMenu() {
+        String orderMenu = removeBlank(inputView.promptForMenuOrder());
+
+        try {
+            splitMenuAndQuantity(extractMenuItems(orderMenu));
+        } catch (IllegalArgumentException e) {
+            System.out.println(ErrorMessage.INVALID_ORDER.getMessage());
+            inputOrderMenu();
+        }
+    }
+
+    private String removeBlank(String inputString) {
+        return inputString.replaceAll(" ","");
     }
 
     private List<String> extractMenuItems(String orderMenu) {
@@ -44,6 +58,9 @@ public class Controller {
 
         for (String item : orderMenu) {
             String[] menuAndQuantity = item.split("-");
+            if (!item.contains("-")) {
+                throw new IllegalArgumentException();
+            }
             String menu = menuAndQuantity[0];
             int quantity = Integer.parseInt(menuAndQuantity[1]);
             menuQuantity.add(new OrderedItem(menu, quantity));
