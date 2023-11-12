@@ -7,11 +7,11 @@ public class ExpectedVisitDate {
     private final int expectedVisitDate;
 
     public ExpectedVisitDate(int expectedVisitDate) {
-        validator();
+        validator(expectedVisitDate);
         this.expectedVisitDate = expectedVisitDate;
     }
 
-    private void validator() {
+    private void validator(int expectedVisitDate) {
         if (!validateNumberRange(expectedVisitDate)) {
             throw new IllegalArgumentException();
         }
