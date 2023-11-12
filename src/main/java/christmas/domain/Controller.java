@@ -18,10 +18,21 @@ public class Controller {
 
     public void eventPlannerLogic() {
         outputView.startMessage();
-        int expectedVisitDate = inputView.promptForExpectedVisitDate();
-        ExpectedVisitDate date = new ExpectedVisitDate(expectedVisitDate);
+        inputExpectedVisitData();
+
         String orderMenu = inputView.promptForMenuOrder();
         splitMenuAndQuantity(extractMenuItems(orderMenu));
+    }
+
+    private void inputExpectedVisitData() {
+        int expectedVisitDate = inputView.promptForExpectedVisitDate();
+
+        try {
+            new ExpectedVisitDate(expectedVisitDate);
+        } catch (IllegalArgumentException e) {
+            System.out.println(ErrorMessage.INVALID_DATE.getMessage());
+            inputExpectedVisitData();
+        }
     }
 
     private List<String> extractMenuItems(String orderMenu) {
@@ -31,8 +42,8 @@ public class Controller {
     private List<OrderedItem> splitMenuAndQuantity(List<String> orderMenu) {
         List<OrderedItem> menuQuantity = new ArrayList<>();
 
-        for (String item:orderMenu) {
-            String[] menuAndQuantity= item.split("-");
+        for (String item : orderMenu) {
+            String[] menuAndQuantity = item.split("-");
             String menu = menuAndQuantity[0];
             int quantity = Integer.parseInt(menuAndQuantity[1]);
             menuQuantity.add(new OrderedItem(menu, quantity));
