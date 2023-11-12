@@ -24,13 +24,36 @@ public class Controller {
     }
 
     private void inputExpectedVisitData() {
-        int expectedVisitDate = Integer.parseInt(removeBlank(inputView.promptForExpectedVisitDate()));
+        String expectedVisitDate = removeBlank(inputView.promptForExpectedVisitDate());
 
         try {
-            new ExpectedVisitDate(expectedVisitDate);
+            isValidData(expectedVisitDate);
+            new ExpectedVisitDate(Integer.parseInt(expectedVisitDate));
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_DATE.getMessage());
             inputExpectedVisitData();
+        }
+    }
+
+    private void isValidData(String inputData){
+     if(!isEmptyData(inputData) || !isNumericData(inputData)) {
+         throw new IllegalArgumentException();
+     }
+    }
+
+
+    private boolean isEmptyData(String inputData) {
+        return !inputData.isEmpty();
+    }
+
+    private boolean isNumericData(String inputData){
+        try {
+            for (String numStr : inputData.split("")) {
+                Integer.parseInt(numStr);
+            }
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 
@@ -46,7 +69,7 @@ public class Controller {
     }
 
     private String removeBlank(String inputString) {
-        return inputString.replaceAll(" ","");
+        return inputString.replaceAll(" ", "");
     }
 
     private List<String> extractMenuItems(String orderMenu) {
