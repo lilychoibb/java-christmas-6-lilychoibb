@@ -34,7 +34,7 @@ public class OutputView {
         DecimalFormat decFormat = new DecimalFormat("###,###");
 
         for (OrderedItem item:orderedItems) {
-            orderAmount += Menu.valueOf(item.getMenu()).getPrice();
+            orderAmount += Menu.valueOf(item.getMenu()).getPrice() * item.getQuantity();
         }
 
         System.out.println("<할인 전 총주문 금액>");
