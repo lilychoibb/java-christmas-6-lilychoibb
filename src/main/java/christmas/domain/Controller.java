@@ -5,8 +5,10 @@ import christmas.model.OrderedItem;
 import christmas.view.InputView;
 import christmas.view.OutputView;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Controller {
     private final OutputView outputView;
@@ -36,10 +38,10 @@ public class Controller {
         }
     }
 
-    private void isValidData(String inputData){
-     if(!isEmptyData(inputData) || !isNumericData(inputData)) {
-         throw new IllegalArgumentException();
-     }
+    private void isValidData(String inputData) {
+        if (!isEmptyData(inputData) || !isNumericData(inputData)) {
+            throw new IllegalArgumentException();
+        }
     }
 
 
@@ -47,7 +49,7 @@ public class Controller {
         return !inputData.isEmpty();
     }
 
-    private boolean isNumericData(String inputData){
+    private boolean isNumericData(String inputData) {
         try {
             for (String numStr : inputData.split("")) {
                 Integer.parseInt(numStr);
@@ -64,6 +66,7 @@ public class Controller {
         try {
             List<OrderedItem> order = splitMenuAndQuantity(extractMenuItems(orderMenu));
             hasBeverageOnlyOrder(order);
+            hasDuplicateMenu(order);
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_ORDER.getMessage());
             inputOrderMenu();
@@ -95,7 +98,7 @@ public class Controller {
         return menuQuantity;
     }
 
-    private void hasBeverageOnlyOrder(List<OrderedItem> items){
+    private void hasBeverageOnlyOrder(List<OrderedItem> items) {
         boolean containsNonBeverage = false;
 
         for (OrderedItem item : items) {
@@ -111,6 +114,24 @@ public class Controller {
             // 전부 음료만 주문된 경우에 대한 예외 처리
             throw new IllegalArgumentException();
         }
+    }
+
+    private void hasDuplicateMenu(List<OrderedItem> items) {
+        List<String> orderedItems1 = new ArrayList<>();
+        Set<String> orderedItems2 = new HashSet<>();
+
+        for (OrderedItem item : items) {
+            orderedItems1.add(item.getMenu());
+        }
+
+        for (OrderedItem item : items) {
+            orderedItems2.add(item.getMenu());
+        }
+
+        if (orderedItems1.size() != orderedItems2.size()) {
+            throw new IllegalArgumentException();
+        }
+
     }
 
 }
