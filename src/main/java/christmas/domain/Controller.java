@@ -29,6 +29,9 @@ public class Controller {
 
         System.out.println();
         outputView.showOrderMenu(orderedItems);
+
+        System.out.println();
+        outputView.showOrderAmountBeforeDiscount(orderedItems);
     }
 
     private ExpectedVisitDate inputExpectedVisitData() {

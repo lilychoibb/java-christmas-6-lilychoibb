@@ -1,7 +1,9 @@
 package christmas.view;
 
+import christmas.domain.Menu;
 import christmas.model.ExpectedVisitDate;
 import christmas.model.OrderedItem;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class OutputView {
@@ -22,8 +24,20 @@ public class OutputView {
     public void showOrderMenu(List<OrderedItem> orderedItems) {
         System.out.println("<주문 메뉴>");
 
-        for (OrderedItem item:orderedItems) {
+        for (OrderedItem item : orderedItems) {
             System.out.println(item.getMenu() + " " + item.getQuantity() + "개");
         }
+    }
+
+    public void showOrderAmountBeforeDiscount(List<OrderedItem> orderedItems) {
+        int orderAmount = 0;
+        DecimalFormat decFormat = new DecimalFormat("###,###");
+
+        for (OrderedItem item:orderedItems) {
+            orderAmount += Menu.valueOf(item.getMenu()).getPrice();
+        }
+
+        System.out.println("<할인 전 총주문 금액>");
+        System.out.println(decFormat.format(orderAmount) + "원");
     }
 }
