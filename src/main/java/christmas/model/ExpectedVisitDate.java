@@ -20,4 +20,8 @@ public class ExpectedVisitDate {
     private boolean validateNumberRange(int expectedVisitDate) {
         return MIN_EXPECTED_VISIT_DATE <= expectedVisitDate && expectedVisitDate <= MAX_EXPECTED_VISIT_DATE;
     }
+
+    public int getExpectedVisitDate() {
+        return expectedVisitDate;
+    }
 }

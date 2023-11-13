@@ -21,21 +21,23 @@ public class Controller {
 
     public void eventPlannerLogic() {
         outputView.startMessage();
-        inputExpectedVisitData();
+        ExpectedVisitDate expectedVisitDate = inputExpectedVisitData();
         inputOrderMenu();
-
+        outputView.showEventBenefitsMessage(expectedVisitDate);
     }
 
-    private void inputExpectedVisitData() {
-        String expectedVisitDate = removeBlank(inputView.promptForExpectedVisitDate());
+    private ExpectedVisitDate inputExpectedVisitData() {
+        String inputDate = removeBlank(inputView.promptForExpectedVisitDate());
 
         try {
-            isValidData(expectedVisitDate);
-            new ExpectedVisitDate(Integer.parseInt(expectedVisitDate));
+            isValidData(inputDate);
+            return new ExpectedVisitDate(Integer.parseInt(inputDate));
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_DATE.getMessage());
             inputExpectedVisitData();
         }
+
+        return null;
     }
 
     private void isValidData(String inputData) {
