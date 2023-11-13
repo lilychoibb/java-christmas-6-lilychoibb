@@ -5,6 +5,8 @@ import christmas.model.OrderAmount;
 import christmas.model.OrderedItem;
 import christmas.view.InputView;
 import christmas.view.OutputView;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +37,10 @@ public class Controller {
         OrderAmount orderAmount = new OrderAmount();
         int totalOrderAmount = orderAmount.calculateTotalOrderAmount(orderedItems);
         outputView.showOrderAmountBeforeDiscount(totalOrderAmount);
+
+        int dayOfMonth = expectedVisitDate.getExpectedVisitDate();
+        LocalDate date = LocalDate.of(2023, 12, dayOfMonth);
+        isWeekDay(date);
     }
 
     private ExpectedVisitDate inputExpectedVisitData() {
@@ -150,4 +156,7 @@ public class Controller {
 
     }
 
+    private boolean isWeekDay(LocalDate date) {
+        return date.getDayOfWeek() != DayOfWeek.FRIDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY;
+    }
 }
