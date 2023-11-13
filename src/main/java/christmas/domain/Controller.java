@@ -56,8 +56,14 @@ public class Controller {
             discount.calculateSpecialDayDiscount();
         }
 
+        System.out.println();
         if (totalOrderAmount >= 120000) {
             discount.calculateFreeGift();
+            outputView.showPromotionalItems(Menu.샴페인.getName(), 1);
+        }
+
+        if (totalOrderAmount < 120000) {
+            outputView.showPromotionalItems("없음", 0);
         }
 
         System.out.println();

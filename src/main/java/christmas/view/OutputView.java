@@ -36,9 +36,13 @@ public class OutputView {
         System.out.println(decFormat.format(orderAmount) + "원");
     }
 
-    public void showPromotionalItems() {
+    public void showPromotionalItems(String item, int quantity) {
         System.out.println("<증정 메뉴>");
+        System.out.print(item + " ");
 
+        if(quantity > 0){
+            System.out.println(quantity + "개");
+        }
     }
 
     public void showBenefitsHistory(Discount discount, ExpectedVisitDate expectedVisitDate) {
