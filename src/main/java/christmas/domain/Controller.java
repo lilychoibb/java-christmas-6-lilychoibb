@@ -1,5 +1,6 @@
 package christmas.domain;
 
+import christmas.model.Discount;
 import christmas.model.ExpectedVisitDate;
 import christmas.model.OrderAmount;
 import christmas.model.OrderedItem;
@@ -40,8 +41,29 @@ public class Controller {
 
         int dayOfMonth = expectedVisitDate.getExpectedVisitDate();
         LocalDate date = LocalDate.of(2023, 12, dayOfMonth);
-        isWeekDay(date);
+
+        Discount discount = new Discount();
+
+        if (isWeekDay(date)) {
+            discount.calculateWeekDayDiscount(orderedItems);
+        }
+
+        if (!isWeekDay(date)) {
+            discount.calculateWeekendDiscount(orderedItems);
+        }
+
+        if (isSpecialDay(date, dayOfMonth)) {
+            discount.calculateSpecialDayDiscount();
+        }
+
+        if (totalOrderAmount >= 120000) {
+            discount.calculateFreeGift();
+        }
+
+        System.out.println();
+        outputView.showBenefitsHistory(discount, expectedVisitDate);
     }
+
 
     private ExpectedVisitDate inputExpectedVisitData() {
         String inputDate = removeBlank(inputView.promptForExpectedVisitDate());
@@ -158,5 +180,9 @@ public class Controller {
 
     private boolean isWeekDay(LocalDate date) {
         return date.getDayOfWeek() != DayOfWeek.FRIDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY;
+    }
+
+    private boolean isSpecialDay(LocalDate date, int dayOfMonth) {
+        return date.getDayOfWeek() == DayOfWeek.SUNDAY || dayOfMonth == 25;
     }
 }

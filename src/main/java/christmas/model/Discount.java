@@ -1,20 +1,24 @@
 package christmas.model;
 
+import static christmas.domain.Discount.WEEKDAY;
+import static christmas.domain.Discount.WEEKEND;
+
 import christmas.domain.Menu;
 import java.util.List;
 import java.util.Objects;
 
 public class Discount {
-    public static final int WEEKDAY = 2023;
-    public static final int WEEKEND = 2023;
-    public static final int SPECIAL = 1000;
-
     private int christmasDDay = 1000;
+    private int totalWeekDayDiscount = 0;
+    private int totalWeekendDiscount = 0;
+    private int specialDayDiscount = 0;
+    private int freeGift = 0;
+    private int totalDiscountAmount = 0;
 
     public Discount() {
     }
 
-    private int calculateChristmasDDayDiscount(ExpectedVisitDate expectedVisitDate) {
+    public int calculateChristmasDDayDiscount(ExpectedVisitDate expectedVisitDate) {
         if (expectedVisitDate.getExpectedVisitDate() <= 25) {
             for (int i = 1; i < expectedVisitDate.getExpectedVisitDate(); i++) {
                 christmasDDay += 100;
@@ -24,23 +28,49 @@ public class Discount {
         return christmasDDay;
     }
 
-    private int calculateWeekDayDiscount(List<OrderedItem> orderedItems) {
-        for (OrderedItem item:orderedItems) {
+    public void calculateWeekDayDiscount(List<OrderedItem> orderedItems) {
+        for (OrderedItem item : orderedItems) {
             Menu menu = Menu.valueOf(item.getMenu());
             if (Objects.equals(menu.getType(), "dessert")) {
-                return menu.getPrice() - WEEKDAY;
+                totalWeekDayDiscount += WEEKDAY.getPrice() * item.getQuantity();
             }
         }
-        return 0;
     }
 
-    private int calculateWeekendDiscount(List<OrderedItem> orderedItems){
-        for (OrderedItem item:orderedItems) {
+    public void calculateWeekendDiscount(List<OrderedItem> orderedItems) {
+        for (OrderedItem item : orderedItems) {
             Menu menu = Menu.valueOf(item.getMenu());
             if (Objects.equals(menu.getType(), "main")) {
-                return menu.getPrice() - WEEKEND;
+                totalWeekendDiscount += WEEKEND.getPrice();
             }
         }
-        return 0;
+    }
+
+    public void calculateSpecialDayDiscount() {
+        specialDayDiscount += christmas.domain.Discount.SPECIAL_DAY.getPrice();
+    }
+
+    public void calculateFreeGift() {
+        freeGift += christmas.domain.Discount.FREE_GIFT.getPrice();
+    }
+
+    public void calculateTotalDiscountWithoutFreeGift() {
+        totalDiscountAmount = christmasDDay + totalWeekDayDiscount + totalWeekendDiscount + specialDayDiscount + freeGift;
+    }
+
+    public int getTotalWeekDayDiscount() {
+        return totalWeekDayDiscount;
+    }
+
+    public int getTotalWeekendDiscount() {
+        return totalWeekendDiscount;
+    }
+
+    public int getSpecialDayDiscount() {
+        return specialDayDiscount;
+    }
+
+    public int getFreeGift() {
+        return freeGift;
     }
 }

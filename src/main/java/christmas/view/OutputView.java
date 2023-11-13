@@ -1,6 +1,6 @@
 package christmas.view;
 
-import christmas.domain.Menu;
+import christmas.model.Discount;
 import christmas.model.ExpectedVisitDate;
 import christmas.model.OrderedItem;
 import java.text.DecimalFormat;
@@ -34,5 +34,28 @@ public class OutputView {
 
         System.out.println("<할인 전 총주문 금액>");
         System.out.println(decFormat.format(orderAmount) + "원");
+    }
+
+    public void showPromotionalItems() {
+        System.out.println("<증정 메뉴>");
+
+    }
+
+    public void showBenefitsHistory(Discount discount, ExpectedVisitDate expectedVisitDate) {
+        DecimalFormat decFormat = new DecimalFormat("###,###");
+
+        System.out.println("<혜택 내역>");
+        System.out.println("크리스마스 디데이 할인: -" + decFormat.format(discount.calculateChristmasDDayDiscount(expectedVisitDate))+ "원");
+
+        if(discount.getTotalWeekDayDiscount() != 0) {
+            System.out.println(christmas.domain.Discount.WEEKDAY.getBenefit() + ": -" + decFormat.format(discount.getTotalWeekDayDiscount()) + "원");
+        }
+
+        if(discount.getTotalWeekendDiscount() != 0) {
+            System.out.println(christmas.domain.Discount.WEEKEND.getBenefit() + ": -" + decFormat.format(discount.getTotalWeekendDiscount()) + "원");
+        }
+
+        System.out.println(christmas.domain.Discount.SPECIAL_DAY.getBenefit() + ": -" + decFormat.format(discount.getSpecialDayDiscount()) + "원");
+        System.out.println(christmas.domain.Discount.FREE_GIFT.getBenefit() + ": -" + decFormat.format(discount.getFreeGift()) + "원");
     }
 }
