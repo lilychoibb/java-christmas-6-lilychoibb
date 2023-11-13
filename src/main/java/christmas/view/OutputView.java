@@ -75,5 +75,11 @@ public class OutputView {
         System.out.println("<총혜택 금액>");
         System.out.println("-" + decFormat.format(totalDiscountAmount) + "원");
     }
+
+    public void showDiscountedTotalPayment(int orderAmount, int totalDiscountAmountWithoutFreeGift) {
+        DecimalFormat decFormat = new DecimalFormat("###,###");
+        System.out.println("<할인 후 예상 결제 금액>");
+        System.out.println(decFormat.format(orderAmount - totalDiscountAmountWithoutFreeGift) + "원");
+    }
     }
 }

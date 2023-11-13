@@ -72,6 +72,11 @@ public class Controller {
         System.out.println();
         int totalDiscountAmount = discount.calculateTotalDiscount();
         outputView.showTotalBenefitAmount(totalDiscountAmount);
+
+        System.out.println();
+        int totalDiscountAmountWithoutFreeGift = discount.calculateTotalDiscountWithoutFreeGift();
+        outputView.showDiscountedTotalPayment(totalOrderAmount, totalDiscountAmountWithoutFreeGift);
+
     }
 
 

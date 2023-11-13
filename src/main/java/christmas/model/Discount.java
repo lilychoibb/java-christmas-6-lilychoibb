@@ -13,6 +13,7 @@ public class Discount {
     private int totalWeekendDiscount = 0;
     private int specialDayDiscount = 0;
     private int freeGift = 0;
+    private int totalDiscountAmountWithoutFreeGift = 0;
     private int totalDiscountAmount = 0;
 
     public Discount() {
@@ -54,8 +55,10 @@ public class Discount {
         freeGift += christmas.domain.Discount.FREE_GIFT.getPrice();
     }
 
-    public void calculateTotalDiscountWithoutFreeGift() {
-        totalDiscountAmount = christmasDDay + totalWeekDayDiscount + totalWeekendDiscount + specialDayDiscount + freeGift;
+    public int calculateTotalDiscountWithoutFreeGift() {
+        return totalDiscountAmountWithoutFreeGift = christmasDDay + totalWeekDayDiscount + totalWeekendDiscount + specialDayDiscount;
+    }
+
     public int calculateTotalDiscount() {
         return totalDiscountAmount = christmasDDay + totalWeekDayDiscount + totalWeekendDiscount + specialDayDiscount + freeGift;
     }
