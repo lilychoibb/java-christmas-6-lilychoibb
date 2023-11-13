@@ -64,18 +64,33 @@ public class Controller {
 
         if (totalOrderAmount < 120000) {
             outputView.showPromotionalItems("없음", 0);
+            System.out.println();
         }
 
         System.out.println();
-        outputView.showBenefitsHistory(discount, expectedVisitDate);
+        outputView.showBenefitsHistory(totalOrderAmount, discount, expectedVisitDate);
+
 
         System.out.println();
         int totalDiscountAmount = discount.calculateTotalDiscount();
-        outputView.showTotalBenefitAmount(totalDiscountAmount);
+
+        if (totalOrderAmount >= 10000) {
+            outputView.showTotalBenefitAmount(totalDiscountAmount);
+        }
+
+        if (totalOrderAmount < 10000) {
+            outputView.showTotalBenefitAmount(0);
+        }
 
         System.out.println();
         int totalDiscountAmountWithoutFreeGift = discount.calculateTotalDiscountWithoutFreeGift();
-        outputView.showDiscountedTotalPayment(totalOrderAmount, totalDiscountAmountWithoutFreeGift);
+
+        if (totalOrderAmount >= 10000) {
+            outputView.showDiscountedTotalPayment(totalOrderAmount, totalDiscountAmountWithoutFreeGift);
+        }
+        if (totalOrderAmount < 10000) {
+            outputView.showDiscountedTotalPayment(totalOrderAmount, 0);
+        }
 
         String badgeName = "없음";
         for (Badge badge : Badge.values()) {
