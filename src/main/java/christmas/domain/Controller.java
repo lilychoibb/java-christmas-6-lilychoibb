@@ -6,6 +6,7 @@ import christmas.view.InputView;
 import christmas.view.OutputView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Controller {
     private final OutputView outputView;
@@ -61,7 +62,8 @@ public class Controller {
         String orderMenu = removeBlank(inputView.promptForMenuOrder());
 
         try {
-            splitMenuAndQuantity(extractMenuItems(orderMenu));
+            List<OrderedItem> order = splitMenuAndQuantity(extractMenuItems(orderMenu));
+            hasBeverageOnlyOrder(order);
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_ORDER.getMessage());
             inputOrderMenu();
@@ -75,6 +77,7 @@ public class Controller {
     private List<String> extractMenuItems(String orderMenu) {
         return List.of(orderMenu.split(","));
     }
+
 
     private List<OrderedItem> splitMenuAndQuantity(List<String> orderMenu) {
         List<OrderedItem> menuQuantity = new ArrayList<>();
@@ -91,4 +94,23 @@ public class Controller {
 
         return menuQuantity;
     }
+
+    private void hasBeverageOnlyOrder(List<OrderedItem> items){
+        boolean containsNonBeverage = false;
+
+        for (OrderedItem item : items) {
+            Menu menu = Menu.valueOf(item.getMenu());
+
+            if (!Objects.equals(menu.getType(), "beverage")) {
+                containsNonBeverage = true;
+                break;
+            }
+        }
+
+        if (!containsNonBeverage) {
+            // 전부 음료만 주문된 경우에 대한 예외 처리
+            throw new IllegalArgumentException();
+        }
+    }
+
 }

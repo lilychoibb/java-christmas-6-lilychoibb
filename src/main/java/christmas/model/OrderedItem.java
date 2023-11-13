@@ -1,6 +1,8 @@
 package christmas.model;
 
 import christmas.domain.Menu;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class OrderedItem {
@@ -32,5 +34,9 @@ public class OrderedItem {
     //개수 검사
     private boolean quantityValidator(int quantity) {
         return 1 <= quantity && quantity <= 20;
+    }
+
+    public String getMenu() {
+        return menu;
     }
 }
