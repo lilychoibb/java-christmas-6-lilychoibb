@@ -39,4 +39,8 @@ public class OrderedItem {
     public String getMenu() {
         return menu;
     }
+
+    public int getQuantity() {
+        return quantity;
+    }
 }

@@ -21,9 +21,14 @@ public class Controller {
 
     public void eventPlannerLogic() {
         outputView.startMessage();
+
         ExpectedVisitDate expectedVisitDate = inputExpectedVisitData();
-        inputOrderMenu();
+        List<OrderedItem> orderedItems = inputOrderMenu();
+
         outputView.showEventBenefitsMessage(expectedVisitDate);
+
+        System.out.println();
+        outputView.showOrderMenu(orderedItems);
     }
 
     private ExpectedVisitDate inputExpectedVisitData() {
@@ -62,17 +67,20 @@ public class Controller {
         }
     }
 
-    private void inputOrderMenu() {
+    private List<OrderedItem> inputOrderMenu() {
         String orderMenu = removeBlank(inputView.promptForMenuOrder());
 
         try {
             List<OrderedItem> order = splitMenuAndQuantity(extractMenuItems(orderMenu));
             hasBeverageOnlyOrder(order);
             hasDuplicateMenu(order);
+            return order;
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_ORDER.getMessage());
             inputOrderMenu();
         }
+
+        return null;
     }
 
     private String removeBlank(String inputString) {
