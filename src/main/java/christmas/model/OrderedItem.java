@@ -33,7 +33,7 @@ public class OrderedItem {
 
     //개수 검사
     private boolean quantityValidator(int quantity) {
-        return 1 <= quantity && quantity <= 20;
+        return 1 <= quantity;
     }
 
     public String getMenu() {

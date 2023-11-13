@@ -70,7 +70,6 @@ public class Controller {
         System.out.println();
         outputView.showBenefitsHistory(totalOrderAmount, discount, expectedVisitDate);
 
-
         System.out.println();
         int totalDiscountAmount = discount.calculateTotalDiscount();
 
@@ -147,6 +146,7 @@ public class Controller {
             List<OrderedItem> order = splitMenuAndQuantity(extractMenuItems(orderMenu));
             hasBeverageOnlyOrder(order);
             hasDuplicateMenu(order);
+            checkMenuQuantity(order);
             return order;
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_ORDER.getMessage());
@@ -223,5 +223,16 @@ public class Controller {
 
     private boolean isSpecialDay(LocalDate date, int dayOfMonth) {
         return date.getDayOfWeek() == DayOfWeek.SUNDAY || dayOfMonth == 25;
+    }
+
+    private void checkMenuQuantity(List<OrderedItem> orderedItems) {
+        int menuQuantity = 0;
+        for (OrderedItem item: orderedItems) {
+            menuQuantity += item.getQuantity();
+        }
+
+        if(menuQuantity > 20) {
+            throw new IllegalArgumentException();
+        }
     }
 }
