@@ -56,6 +56,8 @@ public class Discount {
 
     public void calculateTotalDiscountWithoutFreeGift() {
         totalDiscountAmount = christmasDDay + totalWeekDayDiscount + totalWeekendDiscount + specialDayDiscount + freeGift;
+    public int calculateTotalDiscount() {
+        return totalDiscountAmount = christmasDDay + totalWeekDayDiscount + totalWeekendDiscount + specialDayDiscount + freeGift;
     }
 
     public int getTotalWeekDayDiscount() {

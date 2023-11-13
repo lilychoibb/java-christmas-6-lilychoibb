@@ -68,6 +68,10 @@ public class Controller {
 
         System.out.println();
         outputView.showBenefitsHistory(discount, expectedVisitDate);
+
+        System.out.println();
+        int totalDiscountAmount = discount.calculateTotalDiscount();
+        outputView.showTotalBenefitAmount(totalDiscountAmount);
     }
 
 
