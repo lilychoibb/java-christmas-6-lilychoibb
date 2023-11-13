@@ -77,6 +77,15 @@ public class Controller {
         int totalDiscountAmountWithoutFreeGift = discount.calculateTotalDiscountWithoutFreeGift();
         outputView.showDiscountedTotalPayment(totalOrderAmount, totalDiscountAmountWithoutFreeGift);
 
+        String badgeName = "없음";
+        for (Badge badge : Badge.values()) {
+            if (totalDiscountAmount >= badge.getTotalDiscountAmount()) {
+                badgeName = badge.getName();
+            }
+        }
+
+        System.out.println();
+        outputView.showEventBadge(badgeName);
     }
 
 
