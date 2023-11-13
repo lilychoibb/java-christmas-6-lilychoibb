@@ -1,6 +1,7 @@
 package christmas.domain;
 
 import christmas.model.ExpectedVisitDate;
+import christmas.model.OrderAmount;
 import christmas.model.OrderedItem;
 import christmas.view.InputView;
 import christmas.view.OutputView;
@@ -31,7 +32,9 @@ public class Controller {
         outputView.showOrderMenu(orderedItems);
 
         System.out.println();
-        outputView.showOrderAmountBeforeDiscount(orderedItems);
+        OrderAmount orderAmount = new OrderAmount();
+        int totalOrderAmount = orderAmount.calculateTotalOrderAmount(orderedItems);
+        outputView.showOrderAmountBeforeDiscount(totalOrderAmount);
     }
 
     private ExpectedVisitDate inputExpectedVisitData() {

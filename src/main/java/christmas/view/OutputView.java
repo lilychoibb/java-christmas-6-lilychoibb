@@ -29,13 +29,8 @@ public class OutputView {
         }
     }
 
-    public void showOrderAmountBeforeDiscount(List<OrderedItem> orderedItems) {
-        int orderAmount = 0;
+    public void showOrderAmountBeforeDiscount(int orderAmount) {
         DecimalFormat decFormat = new DecimalFormat("###,###");
-
-        for (OrderedItem item:orderedItems) {
-            orderAmount += Menu.valueOf(item.getMenu()).getPrice() * item.getQuantity();
-        }
 
         System.out.println("<할인 전 총주문 금액>");
         System.out.println(decFormat.format(orderAmount) + "원");
