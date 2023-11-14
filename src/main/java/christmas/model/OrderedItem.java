@@ -1,18 +1,12 @@
 package christmas.model;
 
 import christmas.domain.Menu;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
 
-public class OrderedItem {
-    private final String menu;
-    private final int quantity;
-
-    public OrderedItem(String menu, int quantity) {
+public record OrderedItem(String menu, int quantity) {
+    public OrderedItem {
         validator(menu, quantity);
-        this.menu = menu;
-        this.quantity = quantity;
     }
 
     private void validator(String menu, int quantity) {
@@ -21,26 +15,12 @@ public class OrderedItem {
         }
     }
 
-    // 메뉴판에 있는 메뉴인지 검사
     private boolean menuValidator(String menu) {
-        for (Menu existedMenu : Menu.values()) {
-            if (Objects.equals(menu, existedMenu.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(Menu.values())
+                .anyMatch(existedMenu -> Objects.equals(menu, existedMenu.getName()));
     }
 
-    //개수 검사
     private boolean quantityValidator(int quantity) {
         return 1 <= quantity;
-    }
-
-    public String getMenu() {
-        return menu;
-    }
-
-    public int getQuantity() {
-        return quantity;
     }
 }

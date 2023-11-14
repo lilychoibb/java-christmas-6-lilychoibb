@@ -1,26 +1,31 @@
 package christmas.domain;
 
-import christmas.model.Discount;
+import christmas.model.CalculateDiscount;
 import christmas.model.ExpectedVisitDate;
 import christmas.model.OrderAmount;
 import christmas.model.OrderedItem;
 import christmas.view.InputView;
 import christmas.view.OutputView;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class Controller {
+    public static final int EVENT_YEAR = 2023;
+    public static final int EVENT_MONTH = 12;
+    private final Service service;
     private final OutputView outputView;
     private final InputView inputView;
+    private final CalculateDiscount discount;
+    private final OrderAmount orderAmount;
 
-    public Controller(OutputView outputView, InputView inputView) {
+    public Controller(Service service, OutputView outputView, InputView inputView, CalculateDiscount discount,
+                      OrderAmount orderAmount) {
+        this.service = service;
         this.outputView = outputView;
         this.inputView = inputView;
+        this.discount = discount;
+        this.orderAmount = orderAmount;
     }
 
     public void eventPlannerLogic() {
@@ -29,210 +34,100 @@ public class Controller {
         ExpectedVisitDate expectedVisitDate = inputExpectedVisitData();
         List<OrderedItem> orderedItems = inputOrderMenu();
 
+        processOrderSpecification(expectedVisitDate, orderedItems);
+        showEventPromotions(expectedVisitDate, orderedItems);
+    }
+
+    private void processOrderSpecification(ExpectedVisitDate expectedVisitDate, List<OrderedItem> orderedItems) {
         outputView.showEventBenefitsMessage(expectedVisitDate);
 
         System.out.println();
         outputView.showOrderMenu(orderedItems);
 
         System.out.println();
-        OrderAmount orderAmount = new OrderAmount();
-        int totalOrderAmount = orderAmount.calculateTotalOrderAmount(orderedItems);
-        outputView.showOrderAmountBeforeDiscount(totalOrderAmount);
+        orderAmount.calculateTotalOrderAmount(orderedItems);
 
-        int dayOfMonth = expectedVisitDate.getExpectedVisitDate();
-        LocalDate date = LocalDate.of(2023, 12, dayOfMonth);
+        outputView.showOrderAmountBeforeDiscount(orderAmount);
+    }
 
-        Discount discount = new Discount();
-
-        if (isWeekDay(date)) {
-            discount.calculateWeekDayDiscount(orderedItems);
-        }
-
-        if (!isWeekDay(date)) {
-            discount.calculateWeekendDiscount(orderedItems);
-        }
-
-        if (isSpecialDay(date, dayOfMonth)) {
-            discount.calculateSpecialDayDiscount();
-        }
-
+    private void showEventPromotions(ExpectedVisitDate expectedVisitDate, List<OrderedItem> orderedItems) {
         System.out.println();
-        if (totalOrderAmount >= 120000) {
-            discount.calculateFreeGift();
-            outputView.showPromotionalItems(Menu.샴페인.getName(), 1);
-        }
+        applyDiscountAndShowDetails(expectedVisitDate, orderedItems, orderAmount);
 
-        if (totalOrderAmount < 120000) {
-            outputView.showPromotionalItems("없음", 0);
-            System.out.println();
-        }
-
-        System.out.println();
-        outputView.showBenefitsHistory(totalOrderAmount, discount, expectedVisitDate);
-
-        System.out.println();
         int totalDiscountAmount = discount.calculateTotalDiscount();
-
-        if (totalOrderAmount >= 10000) {
-            outputView.showTotalBenefitAmount(totalDiscountAmount);
-        }
-
-        if (totalOrderAmount < 10000) {
-            outputView.showTotalBenefitAmount(0);
-        }
-
-        System.out.println();
         int totalDiscountAmountWithoutFreeGift = discount.calculateTotalDiscountWithoutFreeGift();
 
-        if (totalOrderAmount >= 10000) {
-            outputView.showDiscountedTotalPayment(totalOrderAmount, totalDiscountAmountWithoutFreeGift);
-        }
-        if (totalOrderAmount < 10000) {
-            outputView.showDiscountedTotalPayment(totalOrderAmount, 0);
-        }
-
-        String badgeName = "없음";
-        for (Badge badge : Badge.values()) {
-            if (totalDiscountAmount >= badge.getTotalDiscountAmount()) {
-                badgeName = badge.getName();
-            }
-        }
+        System.out.println();
+        outputView.showBenefitsHistory(discount, totalDiscountAmount);
 
         System.out.println();
+        outputView.showTotalBenefitAmount(totalDiscountAmount);
+
+        processOrderResult(totalDiscountAmount, totalDiscountAmountWithoutFreeGift);
+    }
+
+    private void processOrderResult(int totalDiscountAmount, int totalDiscountAmountWithoutFreeGift) {
+        System.out.println();
+        orderAmount.calculateDiscountedTotalPayment(totalDiscountAmountWithoutFreeGift);
+        outputView.showDiscountedTotalPayment(orderAmount);
+
+        System.out.println();
+        String badgeName = service.getEventBadgeName(totalDiscountAmount);
         outputView.showEventBadge(badgeName);
     }
 
+    private void applyDiscountAndShowDetails(ExpectedVisitDate expectedVisitDate, List<OrderedItem> orderedItems,
+                                             OrderAmount orderAmount) {
+        String result = "없음";
+        if (orderAmount.isEventApply()) {
+            discountLogic(expectedVisitDate, orderedItems);
+            result = discount.determineGiveFreeGift(orderAmount);
+        }
+
+        outputView.showPromotionalItems(result, getFreeGiftQuantity(result));
+    }
 
     private ExpectedVisitDate inputExpectedVisitData() {
-        String inputDate = removeBlank(inputView.promptForExpectedVisitDate());
+        String inputDate = inputView.promptForExpectedVisitDate();
+        String cleanDate = service.removeBlank(inputDate);
 
         try {
-            isValidData(inputDate);
-            return new ExpectedVisitDate(Integer.parseInt(inputDate));
+            service.isValidData(cleanDate);
+            return new ExpectedVisitDate(Integer.parseInt(cleanDate));
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_DATE.getMessage());
-            inputExpectedVisitData();
-        }
-
-        return null;
-    }
-
-    private void isValidData(String inputData) {
-        if (!isEmptyData(inputData) || !isNumericData(inputData)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-
-    private boolean isEmptyData(String inputData) {
-        return !inputData.isEmpty();
-    }
-
-    private boolean isNumericData(String inputData) {
-        try {
-            for (String numStr : inputData.split("")) {
-                Integer.parseInt(numStr);
-            }
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
+            return inputExpectedVisitData();
         }
     }
 
     private List<OrderedItem> inputOrderMenu() {
-        String orderMenu = removeBlank(inputView.promptForMenuOrder());
-
         try {
-            List<OrderedItem> order = splitMenuAndQuantity(extractMenuItems(orderMenu));
-            hasBeverageOnlyOrder(order);
-            hasDuplicateMenu(order);
-            checkMenuQuantity(order);
-            return order;
+            String inputOrder = inputView.promptForMenuOrder();
+            String cleanOrder = service.removeBlank(inputOrder);
+
+            return service.checkAndExtractOrder(cleanOrder);
         } catch (IllegalArgumentException e) {
             System.out.println(ErrorMessage.INVALID_ORDER.getMessage());
-            inputOrderMenu();
-        }
-
-        return null;
-    }
-
-    private String removeBlank(String inputString) {
-        return inputString.replaceAll(" ", "");
-    }
-
-    private List<String> extractMenuItems(String orderMenu) {
-        return List.of(orderMenu.split(","));
-    }
-
-
-    private List<OrderedItem> splitMenuAndQuantity(List<String> orderMenu) {
-        List<OrderedItem> menuQuantity = new ArrayList<>();
-
-        for (String item : orderMenu) {
-            String[] menuAndQuantity = item.split("-");
-            if (!item.contains("-")) {
-                throw new IllegalArgumentException();
-            }
-            String menu = menuAndQuantity[0];
-            int quantity = Integer.parseInt(menuAndQuantity[1]);
-            menuQuantity.add(new OrderedItem(menu, quantity));
-        }
-
-        return menuQuantity;
-    }
-
-    private void hasBeverageOnlyOrder(List<OrderedItem> items) {
-        boolean containsNonBeverage = false;
-
-        for (OrderedItem item : items) {
-            Menu menu = Menu.valueOf(item.getMenu());
-
-            if (!Objects.equals(menu.getType(), "beverage")) {
-                containsNonBeverage = true;
-                break;
-            }
-        }
-
-        if (!containsNonBeverage) {
-            // 전부 음료만 주문된 경우에 대한 예외 처리
-            throw new IllegalArgumentException();
+            return inputOrderMenu();
         }
     }
 
-    private void hasDuplicateMenu(List<OrderedItem> items) {
-        List<String> orderedItems1 = new ArrayList<>();
-        Set<String> orderedItems2 = new HashSet<>();
+    private void discountLogic(ExpectedVisitDate expectedVisitDate, List<OrderedItem> orderedItems) {
+        int dayOfMonth = expectedVisitDate.expectedVisitDate();
+        LocalDate date = LocalDate.of(EVENT_YEAR, EVENT_MONTH, dayOfMonth);
 
-        for (OrderedItem item : items) {
-            orderedItems1.add(item.getMenu());
-        }
-
-        for (OrderedItem item : items) {
-            orderedItems2.add(item.getMenu());
-        }
-
-        if (orderedItems1.size() != orderedItems2.size()) {
-            throw new IllegalArgumentException();
-        }
-
+        discount.determineDiscountByDate(dayOfMonth);
+        discount.determineDiscountByDay(service, date, orderedItems);
+        discount.determineDiscountBySpecialDay(service, date, dayOfMonth);
     }
 
-    private boolean isWeekDay(LocalDate date) {
-        return date.getDayOfWeek() != DayOfWeek.FRIDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY;
-    }
+    private int getFreeGiftQuantity(String result) {
+        int quantity = 0;
 
-    private boolean isSpecialDay(LocalDate date, int dayOfMonth) {
-        return date.getDayOfWeek() == DayOfWeek.SUNDAY || dayOfMonth == 25;
-    }
-
-    private void checkMenuQuantity(List<OrderedItem> orderedItems) {
-        int menuQuantity = 0;
-        for (OrderedItem item: orderedItems) {
-            menuQuantity += item.getQuantity();
+        if (Objects.equals(result, "샴페인")) {
+            quantity = 1;
         }
 
-        if(menuQuantity > 20) {
-            throw new IllegalArgumentException();
-        }
+        return quantity;
     }
 }
