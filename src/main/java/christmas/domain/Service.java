@@ -115,7 +115,7 @@ public class Service {
         return date.getDayOfWeek() == DayOfWeek.SUNDAY || dayOfMonth == CHRISTMAS_DAY;
     }
 
-    public void checkMenuQuantity(List<OrderedItem> orderedItems) {
+    private void checkMenuQuantity(List<OrderedItem> orderedItems) {
         int totalQuantity = orderedItems.stream()
                 .mapToInt(OrderedItem::quantity)
                 .sum();

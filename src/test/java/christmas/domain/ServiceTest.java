@@ -52,4 +52,25 @@ class ServiceTest {
         assertThat(actualOrder).hasSize(expectedOrder.size())
                 .containsExactlyElementsOf(expectedOrder);
     }
+
+    @DisplayName("음료만 주문한 경우 예외가 발생한다.")
+    @Test
+    void hasBeverageOnlyOrderTest() {
+        assertThatThrownBy(() -> service.checkAndExtractOrder("제로콜라-1,레드와인-1")).isInstanceOf(
+                IllegalArgumentException.class);
+    }
+
+    @DisplayName("중복 메뉴를 주문한 경우 예외가 발생한다.")
+    @Test
+    void hasDuplicateMenuTest() {
+        assertThatThrownBy(() -> service.checkAndExtractOrder("티본스테이크-1,티본스테이크-1")).isInstanceOf(
+                IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴를 20개 이상 주문한 경우 예외가 발생한다.")
+    @Test
+    void checkMenuQuantityTest() {
+        assertThatThrownBy(() -> service.checkAndExtractOrder("티본스테이크-19,제로콜라-1,레드와인-1")).isInstanceOf(
+                IllegalArgumentException.class);
+    }
 }
