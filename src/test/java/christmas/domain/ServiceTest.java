@@ -102,4 +102,11 @@ class ServiceTest {
         LocalDate date = LocalDate.of(2023, 12, 25);
         assertTrue(service.isSpecialDay(date, 25));
     }
+
+    @DisplayName("메뉴 입력 형식이 올바르지 않은 경우 예외가 발생한다.")
+    @Test
+    void createOrderedItemTest() {
+        String input = "티본스테이크1개,바비큐립-1,초코케이크-2,제로콜라-1";
+        assertThatThrownBy(()-> service.checkAndExtractOrder(input)).isInstanceOf(IllegalArgumentException.class);
+    }
 }
