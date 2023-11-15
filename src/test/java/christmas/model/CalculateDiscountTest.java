@@ -13,10 +13,22 @@ import org.junit.jupiter.api.Test;
 
 class CalculateDiscountTest {
     private static CalculateDiscount calculateDiscount;
+    private static LocalDate weekdayDate;
+    private static LocalDate weekendDate;
+    private static LocalDate specialDate;
+    private static List<OrderedItem> orderedItems;
 
     @BeforeAll
     static void ConstructCalculateDiscount() {
         calculateDiscount = new CalculateDiscount();
+
+        weekdayDate = LocalDate.of(2023, 12, 4);
+        weekendDate = LocalDate.of(2023, 12, 1);
+        specialDate = LocalDate.of(2023, 12, 25);
+        orderedItems = Arrays.asList(
+                new OrderedItem("티본스테이크", 2),
+                new OrderedItem("초코케이크", 1)
+        );
     }
 
     @DisplayName("25일 이후에는 크리스마스 디데이 할인이 적용되지 않는다.")
@@ -36,14 +48,7 @@ class CalculateDiscountTest {
     @DisplayName("평일 할인을 올바르게 계산한다.")
     @Test
     void determineDiscountByWeekDayTest() {
-        LocalDate date = LocalDate.of(2023, 12, 4);
-
-        List<OrderedItem> expectedOrder = Arrays.asList(
-                new OrderedItem("티본스테이크", 2),
-                new OrderedItem("초코케이크", 1)
-        );
-
-        calculateDiscount.determineDiscountByDay(new Service(), date, expectedOrder);
+        calculateDiscount.determineDiscountByDay(new Service(), weekdayDate, orderedItems);
         int actualValue = calculateDiscount.getTotalWeekDayDiscount();
         assertThat(actualValue).isEqualTo(-2023);
     }
@@ -51,14 +56,7 @@ class CalculateDiscountTest {
     @DisplayName("주말 할인을 올바르게 계산한다.")
     @Test
     void determineDiscountByWeekendTest() {
-        LocalDate date = LocalDate.of(2023, 12, 1);
-
-        List<OrderedItem> expectedOrder = Arrays.asList(
-                new OrderedItem("티본스테이크", 2),
-                new OrderedItem("초코케이크", 1)
-        );
-
-        calculateDiscount.determineDiscountByDay(new Service(), date, expectedOrder);
+        calculateDiscount.determineDiscountByDay(new Service(), weekendDate, orderedItems);
         int actualValue = calculateDiscount.getTotalWeekendDiscount();
         assertThat(actualValue).isEqualTo(-4046);
     }
@@ -66,8 +64,7 @@ class CalculateDiscountTest {
     @DisplayName("특별 할인을 올바르게 계산한다.")
     @Test
     void determineDiscountBySpecialDayTest() {
-        LocalDate date = LocalDate.of(2023, 12, 25);
-        calculateDiscount.determineDiscountBySpecialDay(new Service(), date, 25);
+        calculateDiscount.determineDiscountBySpecialDay(new Service(), specialDate, 25);
         int actualValue = calculateDiscount.getSpecialDayDiscount();
         assertThat(actualValue).isEqualTo(-1000);
     }
@@ -76,13 +73,7 @@ class CalculateDiscountTest {
     @Test
     void determineGiveFreeGiftTest() {
         OrderAmount orderAmount = new OrderAmount();
-
-        List<OrderedItem> expectedOrder = Arrays.asList(
-                new OrderedItem("티본스테이크", 2),
-                new OrderedItem("초코케이크", 1)
-        );
-
-        orderAmount.calculateTotalOrderAmount(expectedOrder);
+        orderAmount.calculateTotalOrderAmount(orderedItems);
         String actualValue = calculateDiscount.determineGiveFreeGift(orderAmount);
         assertEquals("샴페인", actualValue);
     }
