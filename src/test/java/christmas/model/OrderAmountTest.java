@@ -29,4 +29,13 @@ class OrderAmountTest {
 
         assertEquals(125000, actualValue);
     }
+
+    @DisplayName("할인 후 예상 결제 금액을 올바르게 계산한다.")
+    @Test
+    void calculateDiscountedTotalPaymentTest() {
+        orderAmount.calculateDiscountedTotalPayment(-5000);
+        int actualValue = orderAmount.getDiscountedTotalPayment();
+
+        assertEquals(120000, actualValue);
+    }
 }
