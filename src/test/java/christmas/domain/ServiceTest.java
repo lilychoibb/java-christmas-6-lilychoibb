@@ -2,6 +2,7 @@ package christmas.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import christmas.model.OrderedItem;
 import java.util.Arrays;
@@ -9,6 +10,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ServiceTest {
     private static Service service;
@@ -72,5 +75,13 @@ class ServiceTest {
     void checkMenuQuantityTest() {
         assertThatThrownBy(() -> service.checkAndExtractOrder("티본스테이크-19,제로콜라-1,레드와인-1")).isInstanceOf(
                 IllegalArgumentException.class);
+    }
+
+    @DisplayName("총 혜택 금액에 따른 배지를 알맞게 부여한다.")
+    @ParameterizedTest
+    @CsvSource({"-20000, 산타", "-10000, 트리", "-5000, 별"})
+    void getEventBadgeNameTest(int totalDiscountAmount, String expected) {
+        String actualValue = service.getEventBadgeName(totalDiscountAmount);
+        assertEquals(expected, actualValue);
     }
 }
