@@ -3,6 +3,7 @@ package christmas.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import christmas.model.OrderedItem;
 import java.time.LocalDate;
@@ -93,5 +94,12 @@ class ServiceTest {
         LocalDate date = LocalDate.parse(dateString);
         boolean actualValue = service.isWeekDay(date);
         assertEquals(expected, actualValue);
+    }
+
+    @DisplayName("이벤트 달력에 별이 있는 날인지 확인한다.")
+    @Test
+    void isSpecialDayTest() {
+        LocalDate date = LocalDate.of(2023, 12, 25);
+        assertTrue(service.isSpecialDay(date, 25));
     }
 }
