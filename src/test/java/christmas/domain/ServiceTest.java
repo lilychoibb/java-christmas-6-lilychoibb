@@ -1,5 +1,6 @@
 package christmas.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -24,5 +25,11 @@ class ServiceTest {
     @Test
     void isNotNumericDataTest() {
         assertThatThrownBy(() -> service.isValidData("일")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("입력 값의 공백을 제거한다.")
+    @Test
+    void removeBlankTest() {
+        assertThat(service.removeBlank("티본스테이크-1, 바비큐립-1")).isEqualTo("티본스테이크-1,바비큐립-1");
     }
 
