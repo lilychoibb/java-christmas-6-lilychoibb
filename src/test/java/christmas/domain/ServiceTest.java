@@ -3,6 +3,9 @@ package christmas.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import christmas.model.OrderedItem;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,3 +36,20 @@ class ServiceTest {
         assertThat(service.removeBlank("티본스테이크-1, 바비큐립-1")).isEqualTo("티본스테이크-1,바비큐립-1");
     }
 
+    @DisplayName("주문 메뉴 리스트를 올바르게 생성한다.")
+    @Test
+    void checkAndExtractOrderTest() {
+        String input = "티본스테이크-1,바비큐립-1,초코케이크-2,제로콜라-1";
+        List<OrderedItem> expectedOrder = Arrays.asList(
+                new OrderedItem("티본스테이크", 1),
+                new OrderedItem("바비큐립", 1),
+                new OrderedItem("초코케이크", 2),
+                new OrderedItem("제로콜라", 1)
+        );
+
+        List<OrderedItem> actualOrder = service.checkAndExtractOrder(input);
+
+        assertThat(actualOrder).hasSize(expectedOrder.size())
+                .containsExactlyElementsOf(expectedOrder);
+    }
+}
