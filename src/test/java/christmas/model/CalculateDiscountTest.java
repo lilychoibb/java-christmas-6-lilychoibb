@@ -10,8 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 class CalculateDiscountTest {
     private static CalculateDiscount calculateDiscount;
@@ -87,5 +85,18 @@ class CalculateDiscountTest {
         orderAmount.calculateTotalOrderAmount(expectedOrder);
         String actualValue = calculateDiscount.determineGiveFreeGift(orderAmount);
         assertEquals("샴페인", actualValue);
+    }
+
+    @Test
+    void determineDoNotGiveFreeGiftTest() {
+        OrderAmount orderAmount = new OrderAmount();
+
+        List<OrderedItem> expectedOrder = List.of(
+                new OrderedItem("티본스테이크", 1)
+        );
+
+        orderAmount.calculateTotalOrderAmount(expectedOrder);
+        String actualValue = calculateDiscount.determineGiveFreeGift(orderAmount);
+        assertEquals("없음", actualValue);
     }
 }
