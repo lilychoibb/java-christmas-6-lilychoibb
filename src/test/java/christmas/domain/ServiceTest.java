@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import christmas.model.OrderedItem;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -82,6 +83,15 @@ class ServiceTest {
     @CsvSource({"-20000, 산타", "-10000, 트리", "-5000, 별"})
     void getEventBadgeNameTest(int totalDiscountAmount, String expected) {
         String actualValue = service.getEventBadgeName(totalDiscountAmount);
+        assertEquals(expected, actualValue);
+    }
+
+    @DisplayName("주말인지 평일인지 올바르게 구분한다.")
+    @ParameterizedTest
+    @CsvSource({"2023-12-04, true", "2023-12-01, false"})
+    void isWeekDayTest(String dateString, boolean expected) {
+        LocalDate date = LocalDate.parse(dateString);
+        boolean actualValue = service.isWeekDay(date);
         assertEquals(expected, actualValue);
     }
 }
