@@ -66,7 +66,6 @@ public class CalculateDiscount {
             Menu menu = Menu.valueOf(item.menu());
             if (Objects.equals(menu.getType(), "dessert")) {
                 totalWeekDayDiscount -= WEEKDAY.getPrice() * item.quantity();
-                return;
             }
         }
     }
@@ -76,7 +75,6 @@ public class CalculateDiscount {
             Menu menu = Menu.valueOf(item.menu());
             if (Objects.equals(menu.getType(), "main")) {
                 totalWeekendDiscount -= WEEKEND.getPrice() * item.quantity();
-                return;
             }
         }
     }

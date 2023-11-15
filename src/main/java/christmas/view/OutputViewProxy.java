@@ -10,6 +10,7 @@ public class OutputViewProxy implements InvocationHandler {
     public OutputViewProxy(Object target) {
         this.target = target;
     }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object result = method.invoke(target, args);
