@@ -75,7 +75,7 @@ public class CalculateDiscount {
         for (OrderedItem item : orderedItems) {
             Menu menu = Menu.valueOf(item.menu());
             if (Objects.equals(menu.getType(), "main")) {
-                totalWeekendDiscount -= WEEKEND.getPrice();
+                totalWeekendDiscount -= WEEKEND.getPrice() * item.quantity();
                 return;
             }
         }
