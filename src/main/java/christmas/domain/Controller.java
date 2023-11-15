@@ -6,6 +6,7 @@ import christmas.model.OrderAmount;
 import christmas.model.OrderedItem;
 import christmas.view.InputView;
 import christmas.view.OutputView;
+import christmas.view.OutputViewImpl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -18,18 +19,20 @@ public class Controller {
     private final InputView inputView;
     private final CalculateDiscount discount;
     private final OrderAmount orderAmount;
+    private final OutputViewImpl outputViewImpl;
 
     public Controller(Service service, OutputView outputView, InputView inputView, CalculateDiscount discount,
-                      OrderAmount orderAmount) {
+                      OrderAmount orderAmount, OutputViewImpl outputViewImpl) {
         this.service = service;
         this.outputView = outputView;
         this.inputView = inputView;
         this.discount = discount;
         this.orderAmount = orderAmount;
+        this.outputViewImpl = outputViewImpl;
     }
 
     public void eventPlannerLogic() {
-        outputView.startMessage();
+        outputViewImpl.startMessage();
 
         ExpectedVisitDate expectedVisitDate = inputExpectedVisitData();
         List<OrderedItem> orderedItems = inputOrderMenu();
@@ -40,38 +43,27 @@ public class Controller {
 
     private void processOrderSpecification(ExpectedVisitDate expectedVisitDate, List<OrderedItem> orderedItems) {
         outputView.showEventBenefitsMessage(expectedVisitDate);
-
-        System.out.println();
         outputView.showOrderMenu(orderedItems);
-
-        System.out.println();
         orderAmount.calculateTotalOrderAmount(orderedItems);
-
         outputView.showOrderAmountBeforeDiscount(orderAmount);
     }
 
     private void showEventPromotions(ExpectedVisitDate expectedVisitDate, List<OrderedItem> orderedItems) {
-        System.out.println();
         applyDiscountAndShowDetails(expectedVisitDate, orderedItems, orderAmount);
 
         int totalDiscountAmount = discount.calculateTotalDiscount();
         int totalDiscountAmountWithoutFreeGift = discount.calculateTotalDiscountWithoutFreeGift();
 
-        System.out.println();
         outputView.showBenefitsHistory(discount, totalDiscountAmount);
-
-        System.out.println();
         outputView.showTotalBenefitAmount(totalDiscountAmount);
 
         processOrderResult(totalDiscountAmount, totalDiscountAmountWithoutFreeGift);
     }
 
     private void processOrderResult(int totalDiscountAmount, int totalDiscountAmountWithoutFreeGift) {
-        System.out.println();
         orderAmount.calculateDiscountedTotalPayment(totalDiscountAmountWithoutFreeGift);
         outputView.showDiscountedTotalPayment(orderAmount);
 
-        System.out.println();
         String badgeName = service.getEventBadgeName(totalDiscountAmount);
         outputView.showEventBadge(badgeName);
     }
