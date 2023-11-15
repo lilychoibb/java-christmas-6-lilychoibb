@@ -73,4 +73,19 @@ class CalculateDiscountTest {
         int actualValue = calculateDiscount.getSpecialDayDiscount();
         assertThat(actualValue).isEqualTo(-1000);
     }
+
+    @DisplayName("증정 메뉴를 올바르게 출력한다.")
+    @Test
+    void determineGiveFreeGiftTest() {
+        OrderAmount orderAmount = new OrderAmount();
+
+        List<OrderedItem> expectedOrder = Arrays.asList(
+                new OrderedItem("티본스테이크", 2),
+                new OrderedItem("초코케이크", 1)
+        );
+
+        orderAmount.calculateTotalOrderAmount(expectedOrder);
+        String actualValue = calculateDiscount.determineGiveFreeGift(orderAmount);
+        assertEquals("샴페인", actualValue);
+    }
 }
