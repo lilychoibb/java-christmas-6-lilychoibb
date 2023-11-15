@@ -1,6 +1,7 @@
 package christmas.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,5 +38,11 @@ class OrderAmountTest {
         int actualValue = orderAmount.getDiscountedTotalPayment();
 
         assertEquals(120000, actualValue);
+    }
+
+    @DisplayName("총 주문 금액이 10000원 이상일때 이벤트가 적용된다.")
+    @Test
+    void isEventApplyTest() {
+        assertTrue(orderAmount.isEventApply());
     }
 }
