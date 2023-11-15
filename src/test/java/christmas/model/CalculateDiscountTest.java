@@ -64,4 +64,13 @@ class CalculateDiscountTest {
         int actualValue = calculateDiscount.getTotalWeekendDiscount();
         assertThat(actualValue).isEqualTo(-4046);
     }
+
+    @DisplayName("특별 할인을 올바르게 계산한다.")
+    @Test
+    void determineDiscountBySpecialDayTest() {
+        LocalDate date = LocalDate.of(2023, 12, 25);
+        calculateDiscount.determineDiscountBySpecialDay(new Service(), date, 25);
+        int actualValue = calculateDiscount.getSpecialDayDiscount();
+        assertThat(actualValue).isEqualTo(-1000);
+    }
 }
